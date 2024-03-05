@@ -10,6 +10,9 @@ class LayoutKeys {
   static const String taxes = "taxes";
   static const String taxValue = "tax_value";
   static const String itemLineTotal = "item_line_total";
+  static const String itemPrice = "item_price";
+  static const String itemQty = "item_quantity";
+  static const String itemDiscount = "item_discount";
   static const String amountSubtotal = "amount_subtotal";
   static const String amountTotal = "amount_total";
 }

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:invoice/bloc/template/template_bloc.dart';
-import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
 import 'package:invoice/ui/editable_text.dart';
 
@@ -74,18 +71,3 @@ class TotalTable extends StatelessWidget {
     ]);
   }
 }
-
-// class TotalTxtWidget extends StatelessWidget {
-//   const TotalTxtWidget({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<TemplateBloc, TemplateState>(
-//       builder: (context, state) {
-//         return EditText(
-//             templateKey: "amount_subtotal",
-//             value: state.templateType.getSubTotal());
-//       },
-//     );
-//   }
-//}

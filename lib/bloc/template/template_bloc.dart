@@ -28,6 +28,8 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     //     event.value;
     state.templateType
         .updateItem(key: event.key, value: event.value, rowNum: event.rowNum);
+
+    print(state.templateType.layout);
     emit(UpdateTemplateState(state.templateType));
   }
 

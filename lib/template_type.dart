@@ -21,12 +21,38 @@ class TemplateType {
 
   updateItem(
       {required String key, required String value, required int rowNum}) {
-    if (key == LayoutKeys.itemLineTotal) {
-      layout[LayoutKeys.items][rowNum - 1][key] = double.parse(value);
+    final currentRow = layout[LayoutKeys.items][rowNum - 1];
+    if ((key == LayoutKeys.itemPrice) ||
+        (key == LayoutKeys.itemQty) ||
+        (key == LayoutKeys.itemDiscount)) {
+      String qty = currentRow[LayoutKeys.itemQty].toString();
+      String price = currentRow[LayoutKeys.itemPrice].toString();
+      String discount = currentRow[LayoutKeys.itemDiscount].toString();
+
+      if (key == LayoutKeys.itemQty) {
+        currentRow[LayoutKeys.itemQty] = value;
+        qty = value;
+      } else if (key == LayoutKeys.itemPrice) {
+        currentRow[key] = value;
+        price = value;
+      } else if (key == LayoutKeys.itemDiscount) {
+        currentRow[key] = value;
+        discount = value;
+      }
+      double priceDouble = (double.tryParse(price) ?? 0);
+      double discountPrice = (double.tryParse(discount) ?? 0.0);
+
+      if (discountPrice > 0.0) {
+        discountPrice = priceDouble - ((discountPrice / 100) * priceDouble);
+      } else {
+        discountPrice = priceDouble;
+      }
+      currentRow[LayoutKeys.itemLineTotal] =
+          discountPrice * (int.tryParse(qty) ?? 1);
       layout[LayoutKeys.amountSubtotal] = _getSubTotal();
       layout[LayoutKeys.amountTotal] = _getTotal();
     } else {
-      layout[LayoutKeys.items][rowNum - 1][key] = value;
+      currentRow[key] = value;
     }
   }
 
