@@ -5,6 +5,7 @@ import 'package:invoice/bloc/pdf/pdf_state.dart';
 import 'package:invoice/bloc/template/template_bloc.dart';
 import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
+import 'package:invoice/generate_pdf.dart';
 import 'package:invoice/template_one.dart';
 import 'package:invoice/template_type.dart';
 import 'package:invoice/ui/invoice/add_row.dart';
@@ -16,15 +17,13 @@ import 'package:invoice/total.dart';
 import 'package:invoice/ui/editable_text.dart';
 
 void main() {
-  runApp(const Invoice());
+  runApp(const App());
 }
 
-class Invoice extends StatelessWidget {
-  const Invoice({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
   @override
   Widget build(BuildContext context) {
-    const url =
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Hopetoun_falls.jpg/220px-Hopetoun_falls.jpg";
     return MultiBlocProvider(
       providers: [
         BlocProvider<PdfBloc>(
@@ -58,37 +57,53 @@ class Invoice extends StatelessWidget {
               TemplateType(layout: layoutOne, hovered: hovered)));
         }),
       ],
-      child: MaterialApp(
-          home: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(50.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Header(url: url),
-                Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    height: 1,
-                    color: Colors.black),
-                const Billing(),
-                const SizedBox(height: 50),
-                const Align(
-                    alignment: Alignment.topLeft,
-                    child: EditText(
-                        templateKey: "invoice_title", value: "INVOICE")),
-                const SizedBox(height: 10),
-                const InvoiceTable(),
-                const Padding(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
-                    child: AddRow()),
-                const TotalWidget(),
-                const TermCondt()
-              ],
-            ),
+      child: const MaterialApp(home: Invoice()),
+    );
+  }
+}
+
+class Invoice extends StatelessWidget {
+  const Invoice({super.key});
+  static const url =
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Hopetoun_falls.jpg/220px-Hopetoun_falls.jpg";
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(50.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    generatePdf(
+                        templateType:
+                            context.read<TemplateBloc>().state.templateType);
+                  },
+                  child: const Text("Print")),
+              const Header(url: url),
+              Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  height: 1,
+                  color: Colors.black),
+              const Billing(),
+              const SizedBox(height: 50),
+              const Align(
+                  alignment: Alignment.topLeft,
+                  child:
+                      EditText(templateKey: "invoice_title", value: "INVOICE")),
+              const SizedBox(height: 10),
+              const InvoiceTable(),
+              const Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: AddRow()),
+              const TotalWidget(),
+              const TermCondt()
+            ],
           ),
         ),
-      )),
+      ),
     );
   }
 }
