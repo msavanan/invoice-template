@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/bloc/template/template_state.dart';
-import 'package:invoice/constant.dart';
 
 class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
   TemplateBloc(super.initialState) {
@@ -29,20 +28,20 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     state.templateType
         .updateItem(key: event.key, value: event.value, rowNum: event.rowNum);
 
-    print(state.templateType.layout);
+    //print(state.templateType.layout);
     emit(UpdateTemplateState(state.templateType));
   }
 
   _hover(Hover event, emit) {
     //state.templateType.hovered.putIfAbsent(event.key, () => true);
-    state.templateType.hovered
-        .update(event.key, (value) => true, ifAbsent: () => true);
+    state.templateType.updateHovered(key: event.key, isHovered: true);
+    //.update(event.key, (value) => true, ifAbsent: () => true);
     emit(HoverState(state.templateType));
   }
 
   _exit(event, emit) {
-    state.templateType.hovered
-        .update(event.key, (value) => false, ifAbsent: () => false);
+    state.templateType.updateHovered(key: event.key, isHovered: false);
+    //.update(event.key, (value) => false, ifAbsent: () => false);
     emit(ExitState(state.templateType));
   }
 

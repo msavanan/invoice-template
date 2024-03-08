@@ -1,10 +1,12 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:invoice/constant.dart';
 
 class TemplateType {
   final Map<String, dynamic> layout;
   final Map<String, dynamic> hovered;
+  XFile? image;
 
-  TemplateType({required this.layout, required this.hovered});
+  TemplateType({required this.layout, required this.hovered, this.image});
 
   update(
       {required String key,
@@ -78,6 +80,14 @@ class TemplateType {
     return '';
   }
 
+  bool getHoveredValue({required String key}) {
+    if (hovered.containsKey(key)) {
+      return hovered[key];
+    }
+
+    return false;
+  }
+
   bool getHoveredItemValue({required String key, required int rowNum}) {
     final Map<String, dynamic> item = hovered[LayoutKeys.items][rowNum - 1];
 
@@ -92,6 +102,10 @@ class TemplateType {
       {required bool isHovered, required String key, required int rowNum}) {
     final Map<String, dynamic> item = hovered[LayoutKeys.items][rowNum - 1];
     item.update(key, (value) => isHovered, ifAbsent: () => isHovered);
+  }
+
+  updateHovered({required String key, required bool isHovered}) {
+    hovered.update(key, (value) => isHovered, ifAbsent: () => isHovered);
   }
 
   String getItemTitleValue(key) {
@@ -122,11 +136,14 @@ class TemplateType {
 
   String _getTotal() {
     final String amount = layout[LayoutKeys.amountSubtotal];
-    final String taxValue = getTaxValues(LayoutKeys.taxValue);
+    final String taxPercentage = getTaxValues(LayoutKeys.taxPercentage);
     double total = 0;
+    double taxValue = 0;
     try {
       double amountDouble = double.parse(amount);
-      total = amountDouble + (double.parse(taxValue) * amountDouble / 100);
+      taxValue = (double.parse(taxPercentage) * amountDouble / 100);
+      total = amountDouble + taxValue;
+      layout[LayoutKeys.taxes].first[LayoutKeys.taxValue] = taxValue.toString();
     } catch (e) {
       print(e);
     }

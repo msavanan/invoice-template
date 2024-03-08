@@ -9,12 +9,14 @@ class LayoutKeys {
   static const String items = "items";
   static const String taxes = "taxes";
   static const String taxValue = "tax_value";
+  static const String taxPercentage = "tax_percentage";
   static const String itemLineTotal = "item_line_total";
   static const String itemPrice = "item_price";
   static const String itemQty = "item_quantity";
   static const String itemDiscount = "item_discount";
   static const String amountSubtotal = "amount_subtotal";
   static const String amountTotal = "amount_total";
+  static const String companyLogo = "company_logo";
 }
 
 class HeaderKeys {
@@ -76,4 +78,60 @@ class BillingKeys {
       [invoiceNumLabel, invoiceDateLabel, issueDateLabel, dueDateLabel];
   static List<String> get rightListTwo =>
       [invoiceNumber, invoiceDate, issueDate, dueDate];
+}
+
+class TotalKeys {
+  static const String amountSubtotalLabel = 'amount_subtotal_label';
+  static const String amountSubtotal = "amount_subtotal";
+  static const String amountTotalLabel = "amount_total_label";
+  static const String amountTotal = "amount_total";
+
+  static const String taxName = "tax_name";
+  static const String taxValue = "tax_value";
+}
+
+class TermsKeys {
+  static const String termsLabel = 'terms_label';
+  static const String terms = 'terms';
+}
+
+class TableKeys {
+  static const String invoiceTitle = 'invoice_title';
+  static const String items = 'items';
+
+  static const String itemRowNumberLabel = "item_row_number_label";
+  static const String itemDescriptionLabel = "item_description_label";
+  static const String itemQuantityLabel = "item_quantity_label";
+  static const String itemPriceLabel = "item_price_label";
+  static const String itemDiscountLabel = "item_discount_label";
+  static const String itemTaxLabel = "item_tax_label";
+  static const String itemAmountLabel = "item_amount_label";
+
+  static const String itemRowNumber = "item_row_number";
+  static const String itemDescription = "item_description";
+  static const String itemQuantity = "item_quantity";
+  static const String itemPrice = "item_price";
+  static const String itemDiscount = "item_discount";
+  static const String itemTax = "item_tax";
+  static const String itemLineTotal = "item_line_total";
+
+  static const List<String> title = [
+    itemRowNumberLabel,
+    itemDescriptionLabel,
+    itemQuantityLabel,
+    itemPriceLabel,
+    itemDiscountLabel,
+    itemTaxLabel,
+    itemAmountLabel
+  ];
+
+  static const List<String> itemsList = [
+    itemRowNumber,
+    itemDescription,
+    itemQuantity,
+    itemPrice,
+    itemDiscount,
+    itemTax,
+    itemLineTotal
+  ];
 }

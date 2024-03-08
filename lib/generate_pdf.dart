@@ -1,39 +1,36 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:invoice/constant.dart';
-import 'package:invoice/template_type.dart';
+import 'package:invoice/pdf/read_template_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
-generatePdf({required TemplateType templateType}) async {
+generatePdf() async {
   final pdf = pw.Document();
-
-  final netImage = await networkImage('https://www.nfet.net/nfet.jpg');
 
   pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
         return [
-          PdfHeader(netImage: netImage, templateType: templateType),
+          PdfHeader(),
           pw.Container(
             margin: const pw.EdgeInsets.only(top: 5, bottom: 5),
             height: 1,
             color: PdfColor.fromHex('#000000'),
           ),
-          PdfBilling(templateType: templateType),
+          PdfBilling(),
           pw.SizedBox(height: 10),
-          pw.Text("INVOICE"),
+          PdfText(TableKeys.invoiceTitle),
           pw.SizedBox(height: 5),
           PdfTable(),
           pw.SizedBox(height: 10),
           PdfTotal(),
           pw.SizedBox(height: 10),
-          pw.Text("Terms & Notes"),
+          PdfText(TermsKeys.termsLabel),
           pw.SizedBox(height: 10),
-          pw.Text(
-              "Fred, thank you very much. We really appreciate your business.\nPlease send payments before the due date."),
+          PdfText(TermsKeys.terms),
         ]; // Center
       })); // Page
 
@@ -52,24 +49,28 @@ generatePdf({required TemplateType templateType}) async {
 }
 
 class PdfHeader extends pw.Row {
-  final pw.ImageProvider netImage;
-
-  PdfHeader(
-      {super.crossAxisAlignment = pw.CrossAxisAlignment.start,
-      required this.netImage,
-      required TemplateType templateType})
-      : super(children: [
-          pw.Image(netImage, width: 65, height: 65),
+  PdfHeader({
+    super.crossAxisAlignment = pw.CrossAxisAlignment.start,
+  }) : super(children: [
+          ReadTemplate.instance!.getValue(LayoutKeys.companyLogo).isNotEmpty
+              ? pw.Image(
+                  pw.MemoryImage(File(ReadTemplate.instance!
+                          .getValue(LayoutKeys.companyLogo))
+                      .readAsBytesSync()),
+                  width: 65,
+                  height: 65,
+                  fit: pw.BoxFit.fill)
+              : pw.SizedBox.shrink(),
           pw.SizedBox(width: 10),
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             ...HeaderKeys.leftList.map(
-              (e) => pw.Text(templateType.getValue(e)),
+              (e) => PdfText(e),
             ),
           ]),
           pw.Spacer(),
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
             ...HeaderKeys.rightList.map(
-              (e) => pw.Text(templateType.getValue(e)),
+              (e) => PdfText(e),
             ),
           ]),
         ]);
@@ -78,35 +79,19 @@ class PdfHeader extends pw.Row {
 class PdfBilling extends pw.Row {
   PdfBilling({
     super.crossAxisAlignment = pw.CrossAxisAlignment.start,
-    required TemplateType templateType,
   }) : super(children: [
-          pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            ...BillingKeys.leftList
-                .map((e) => pw.Text(templateType.getValue(e)))
-            // pw.Text("Bill to:"),
-            // pw.Text("Slate Rock and Gravel Company"),
-            // pw.Text("222 Rocky Way"),
-            // pw.Text("30000 Bedrock, Cobblestone County"),
-            // pw.Text("+555 7 123-5555"),
-            // pw.Text("fred@slaterockgravel.bed")
-          ]),
+          pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [...BillingKeys.leftList.map((e) => PdfText(e))]),
           pw.Spacer(),
           pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
             pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.end,
-                children: [
-                  ...BillingKeys.rightListOne
-                      .map((e) => pw.Text(templateType.getValue(e)))
-                ]),
+                children: [...BillingKeys.rightListOne.map((e) => PdfText(e))]),
             pw.SizedBox(width: 8),
-            pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-              ...BillingKeys.rightListTwo
-                  .map((e) => pw.Text(templateType.getValue(e)))
-            ]),
-            // pw.Text("Invoice No: 1"),
-            // pw.Text("Invoice Date: 2024-03-02"),
-            // pw.Text("Issue Date: 2024-03-02"),
-            // pw.Text("Due Date: 2024-03-02"),
+            pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.end,
+                children: [...BillingKeys.rightListTwo.map((e) => PdfText(e))]),
           ]),
         ]);
 }
@@ -115,63 +100,35 @@ class PdfTable extends pw.Table {
   PdfTable()
       : super(children: [
           pw.TableRow(
-            children: [
-              pw.Text("Slno"),
-              pw.Text("Item"),
-              pw.Text("Quantity"),
-              pw.Text("Price"),
-              pw.Text("Discount"),
-              pw.Text("Tax"),
-              pw.Text("Amount")
-            ],
-          ),
-          pw.TableRow(children: [
-            pw.Text("01"),
-            pw.Text("Frozen Brontosaurus Ribs"),
-            pw.Text("1"),
-            pw.Text("100"),
-            pw.Text("0"),
-            pw.Text("19"),
-            pw.Text("100")
-          ]),
-          pw.TableRow(children: [
-            pw.Text("02"),
-            pw.Text("Lamb Steak"),
-            pw.Text("1"),
-            pw.Text("120"),
-            pw.Text("0"),
-            pw.Text("19"),
-            pw.Text("120")
-          ]),
-          pw.TableRow(children: [
-            pw.Text("02"),
-            pw.Text("Steamed Fish"),
-            pw.Text("1"),
-            pw.Text("80"),
-            pw.Text("0"),
-            pw.Text("19"),
-            pw.Text("80")
-          ]),
-        ]);
-}
+            children: TableKeys.title.map((key) {
+              final bool isItems = TableKeys.itemDescriptionLabel == key;
 
-class PdfTotalRow extends pw.Row {
-  final String row1;
-  final String row2;
-  PdfTotalRow({
-    super.crossAxisAlignment = pw.CrossAxisAlignment.start,
-    super.mainAxisAlignment = pw.MainAxisAlignment.end,
-    required this.row1,
-    required this.row2,
-  }) : super(children: [
-          // pw.Column(
-          //     crossAxisAlignment: pw.CrossAxisAlignment.start,
-          //     children: [pw.Text(row1)]),
-          // pw.SizedBox(width: 20),
-          // pw.Column(children: [pw.Text(row2)]),
-          pw.Text(row1),
-          pw.SizedBox(width: 20),
-          pw.Text(row2)
+              return pw.Expanded(
+                  flex: isItems ? 4 : 1,
+                  child: PdfText(key, textAlign: pw.TextAlign.center));
+            }).toList(),
+            verticalAlignment: pw.TableCellVerticalAlignment.middle,
+          ),
+          ...ReadTemplate.instance!.getItems().map((e) => pw.TableRow(
+                children: [
+                  ...e.keys.map(
+                    (key) {
+                      pw.TextAlign setTextAlign(String key) {
+                        if (key == LayoutKeys.itemLineTotal) {
+                          return pw.TextAlign.end;
+                        } else if (key != TableKeys.itemDescription) {
+                          return pw.TextAlign.center;
+                        }
+                        return pw.TextAlign.start;
+                      }
+
+                      return pw.Text(e[key].toString(),
+                          textAlign: setTextAlign(key), softWrap: true);
+                    },
+                  )
+                ],
+                verticalAlignment: pw.TableCellVerticalAlignment.middle,
+              )),
         ]);
 }
 
@@ -179,8 +136,44 @@ class PdfTotal extends pw.Column {
   PdfTotal({
     super.crossAxisAlignment = pw.CrossAxisAlignment.end,
   }) : super(children: [
-          PdfTotalRow(row1: "Sub Total", row2: "300"),
-          PdfTotalRow(row1: "Tax 19%", row2: "57"),
-          PdfTotalRow(row1: "Total", row2: "357"),
+          PdfTotalRow(
+              key1: TotalKeys.amountSubtotalLabel,
+              key2: TotalKeys.amountSubtotal),
+          PdfTotalRow(key1: TotalKeys.taxName, key2: TotalKeys.taxValue),
+          PdfTotalRow(
+              key1: TotalKeys.amountTotalLabel, key2: TotalKeys.amountTotal)
         ]);
+}
+
+class PdfTotalRow extends pw.Row {
+  final String key1;
+  final String key2;
+  PdfTotalRow({
+    super.crossAxisAlignment = pw.CrossAxisAlignment.start,
+    super.mainAxisAlignment = pw.MainAxisAlignment.end,
+    required this.key1,
+    required this.key2,
+  }) : super(children: [
+          pw.Text(key1 != TotalKeys.taxName
+              ? ReadTemplate.instance!.getValue(key1)
+              : ReadTemplate.instance!.getTaxValue(key1)),
+          pw.SizedBox(width: 20),
+          pw.Text(key2 != TotalKeys.taxValue
+              ? ReadTemplate.instance!.getValue(key2)
+              : ReadTemplate.instance!.getTaxValue(key2))
+        ]);
+}
+
+class PdfText extends pw.Text {
+  PdfText(
+    String key, {
+    super.style,
+    super.textAlign,
+    super.textDirection,
+    super.softWrap,
+    super.tightBounds,
+    super.textScaleFactor,
+    super.maxLines,
+    TextOverflow? overflow,
+  }) : super(ReadTemplate.instance!.getValue(key).toString());
 }

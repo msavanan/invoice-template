@@ -6,6 +6,7 @@ import 'package:invoice/bloc/template/template_bloc.dart';
 import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
 import 'package:invoice/generate_pdf.dart';
+import 'package:invoice/pdf/read_template_type.dart';
 import 'package:invoice/template_one.dart';
 import 'package:invoice/template_type.dart';
 import 'package:invoice/ui/invoice/add_row.dart';
@@ -77,12 +78,12 @@ class Invoice extends StatelessWidget {
             children: [
               ElevatedButton(
                   onPressed: () {
-                    generatePdf(
-                        templateType:
-                            context.read<TemplateBloc>().state.templateType);
+                    ReadTemplate(
+                        context.read<TemplateBloc>().state.templateType);
+                    generatePdf();
                   },
                   child: const Text("Print")),
-              const Header(url: url),
+              const Header(),
               Container(
                   margin: const EdgeInsets.only(top: 20),
                   height: 1,
