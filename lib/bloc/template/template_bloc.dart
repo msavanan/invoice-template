@@ -11,6 +11,9 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     on<Exit>(_exit);
     on<HoverItem>(_hoverItem);
     on<ExitItem>(_exitItem);
+    on<AddRow>(_addRow);
+    on<Loading>(_loading);
+    on<Success>(_success);
   }
 
   _readTemplate(event, emit) {}
@@ -60,5 +63,18 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     state.templateType.updateHoveredItem(
         isHovered: false, key: event.key, rowNum: event.rowNum);
     emit(ExitState(state.templateType));
+  }
+
+  _loading(event, emit){
+    emit(LoadingState(state.templateType));
+  }
+
+  _success(even, emit){
+    emit(SuccessState(state.templateType));
+  }
+
+  _addRow(event, emit) {
+    state.templateType.addRow();
+    emit(AddRowState(state.templateType));
   }
 }

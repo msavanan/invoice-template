@@ -9,11 +9,11 @@ class EditText extends StatelessWidget {
   const EditText(
       {super.key,
       required this.templateKey,
-      required this.value,
-      this.type = Types.defaults});
+      this.type = Types.defaults,
+      this.isEditable = true});
   final String templateKey;
-  final String value;
   final String type;
+  final bool isEditable;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,6 @@ class EditText extends StatelessWidget {
         final templateBlocNotifier = context.read<TemplateBloc>();
         final txt = templateBlocNotifier.state.templateType
             .getValue(templateKey, type: type);
-        //layout[templateKey] ?? '';
 
         return MouseRegion(
           onHover: (pointerHoverEvent) {
@@ -32,7 +31,7 @@ class EditText extends StatelessWidget {
           onExit: (pointerExitEvent) {
             templateBlocNotifier.add(Exit(key: templateKey));
           },
-          child: hovered
+          child: hovered && isEditable
               ? EditableTextFormField(
                   txt: txt,
                   width: 250,
@@ -41,7 +40,6 @@ class EditText extends StatelessWidget {
                         key: templateKey, value: value ?? '', type: type));
                   },
                 )
-              //: Text(value),
               : Text(txt),
         );
       },
@@ -54,10 +52,12 @@ class EditItemsText extends StatelessWidget {
       {super.key,
       required this.templateKey,
       required this.value,
-      required this.rowNum});
+      required this.rowNum,
+      this.isEditable = true});
   final String templateKey;
   final String value;
   final int rowNum;
+  final bool isEditable;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,6 @@ class EditItemsText extends StatelessWidget {
         final templateBlocNotifier = context.read<TemplateBloc>();
         final txt = templateBlocNotifier.state.templateType
             .getItemValue(key: templateKey, rowNum: rowNum);
-        //layout[templateKey] ?? '';
 
         return MouseRegion(
           onHover: (pointerHoverEvent) {
@@ -79,7 +78,7 @@ class EditItemsText extends StatelessWidget {
             templateBlocNotifier
                 .add(ExitItem(key: templateKey, rowNum: rowNum));
           },
-          child: hovered
+          child: hovered && isEditable == true
               ? EditableTextFormField(
                   txt: txt,
                   width: 250,

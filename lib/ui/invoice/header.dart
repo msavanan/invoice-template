@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:image_picker/image_picker.dart';
+
 import 'package:invoice/bloc/template/template_bloc.dart';
 import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/bloc/template/template_state.dart';
@@ -35,12 +38,15 @@ class Header extends StatelessWidget {
           },
           child: Stack(children: [
             img.isNotEmpty
-                ? Image(
-                    image: Image.file(File(img)).image,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.fill,
-                  )
+                ? kIsWeb
+                    ? Image.network(
+                        img,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.fill,
+                      )
+                    : Image.file(File(img),
+                        width: 100, height: 100, fit: BoxFit.fill)
                 : InkWell(
                     onTap: () async {
                       final picker = ImagePicker();
@@ -106,28 +112,22 @@ class Header extends StatelessWidget {
         const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            EditText(templateKey: "company_name", value: "Dino Store"),
-            EditText(
-                templateKey: "company_info1", value: "227 Cobblestone Road"),
-            EditText(
-                templateKey: "company_info2",
-                value: "30000 Bedrock, Cobblestone County"),
-            EditText(templateKey: "company_info3", value: "+555 7 789-1234"),
-            EditText(
-                templateKey: "company_info4",
-                value: "https://dinostore.bed | hello@dinostore.bed")
+            EditText(templateKey: "company_name"),
+            EditText(templateKey: "company_info1"),
+            EditText(templateKey: "company_info2"),
+            EditText(templateKey: "company_info3"),
+            EditText(templateKey: "company_info4")
           ],
         ),
         const Spacer(),
         const Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            EditText(templateKey: "company_info5", value: "Payment details:"),
-            EditText(templateKey: "company_info6", value: "ACC:123006705"),
-            EditText(
-                templateKey: "company_info7", value: "IBAN:US100000060345"),
-            EditText(templateKey: "company_info8", value: "SWIFT:BOA447"),
-            EditText(templateKey: "company_info9", value: "")
+            EditText(templateKey: "company_info5"),
+            EditText(templateKey: "company_info6"),
+            EditText(templateKey: "company_info7"),
+            EditText(templateKey: "company_info8"),
+            EditText(templateKey: "company_info9")
           ],
         ),
       ],

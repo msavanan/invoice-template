@@ -9,11 +9,8 @@ class TermCondt extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EditText(templateKey: "terms_label", value: "Terms & Notes"),
-        EditText(
-            templateKey: "terms",
-            value:
-                "Fred, thank you very much. We really appreciate your business. Please send payments before the due date."),
+        EditText(templateKey: "terms_label"),
+        EditText(templateKey: "terms"),
       ],
     );
   }

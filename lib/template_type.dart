@@ -32,13 +32,13 @@ class TemplateType {
       String discount = currentRow[LayoutKeys.itemDiscount].toString();
 
       if (key == LayoutKeys.itemQty) {
-        currentRow[LayoutKeys.itemQty] = value;
+        currentRow[key] = int.tryParse(value) ?? 0;
         qty = value;
       } else if (key == LayoutKeys.itemPrice) {
-        currentRow[key] = value;
+        currentRow[key] = double.tryParse(value) ?? 0;
         price = value;
       } else if (key == LayoutKeys.itemDiscount) {
-        currentRow[key] = value;
+        currentRow[key] = double.tryParse(value) ?? 0;
         discount = value;
       }
       double priceDouble = (double.tryParse(price) ?? 0);
@@ -149,6 +149,25 @@ class TemplateType {
     }
 
     return total.toString();
+  }
+
+  addRow() {
+    final Map<String, Object> row = {
+      TableKeys.itemRowNumber: layout[LayoutKeys.items].length + 1,
+      TableKeys.itemDescription: '',
+      TableKeys.itemQuantity: '',
+      TableKeys.itemPrice: '',
+      TableKeys.itemDiscount: '',
+      TableKeys.itemTax: '',
+      TableKeys.itemLineTotal: '',
+    };
+
+    final Map<String, bool> rowHovered = {};
+    for (String key in row.keys) {
+      rowHovered[key] = false;
+    }
+    layout[LayoutKeys.items].add(row);
+    hovered[LayoutKeys.items].add(rowHovered);
   }
 }
 

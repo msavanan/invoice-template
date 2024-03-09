@@ -11,20 +11,16 @@ class TotalWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         TotalTable(
-            childOne: EditText(
-                templateKey: "amount_subtotal_label", value: "Subtotal:"),
-            childTwo: EditText(templateKey: "amount_subtotal", value: "300")),
+            childOne: EditText(templateKey: "amount_subtotal_label"),
+            childTwo: EditText(templateKey: "amount_subtotal")),
         SizedBox(height: 25),
         TotalTable(
-            childOne: EditText(
-                templateKey: "tax_name", value: "Tax 19%:", type: Types.taxes),
-            childTwo: EditText(
-                templateKey: "tax_value", value: "19", type: Types.taxes)),
+            childOne: EditText(templateKey: "tax_name", type: Types.taxes),
+            childTwo: EditText(templateKey: "tax_value", type: Types.taxes)),
         DividerWidget(),
         TotalTable(
-            childOne:
-                EditText(templateKey: "amount_total_label", value: "Total:"),
-            childTwo: EditText(templateKey: "amount_total", value: "119")),
+            childOne: EditText(templateKey: "amount_total_label"),
+            childTwo: EditText(templateKey: "amount_total")),
 
         // TotalTable(
         //     childOne:

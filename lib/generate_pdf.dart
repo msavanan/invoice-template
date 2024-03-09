@@ -1,20 +1,24 @@
-import 'dart:io';
+import 'pdf/manager/manager.dart'
+    if (dart.library.io) 'pdf/manager/mobile.dart'
+    if (dart.library.html) 'pdf/manager/web.dart';
 
 import 'package:flutter/material.dart';
 import 'package:invoice/constant.dart';
 import 'package:invoice/pdf/read_template_type.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 generatePdf() async {
   final pdf = pw.Document();
 
+  final netImage =
+      await getImage(ReadTemplate.instance!.getValue(LayoutKeys.companyLogo));
+
   pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
         return [
-          PdfHeader(),
+          PdfHeader(netImage),
           pw.Container(
             margin: const pw.EdgeInsets.only(top: 5, bottom: 5),
             height: 1,
@@ -34,32 +38,17 @@ generatePdf() async {
         ]; // Center
       })); // Page
 
-  final output = await getDownloadsDirectory();
-
-  final file = File("${output?.path ?? ''}/example.pdf");
-  file.writeAsBytes(await pdf.save());
-
-  // var savedFile = await pdf.save();
-  // List<int> fileInts = List.from(savedFile);
-  // html.AnchorElement(
-  //     href:
-  //         "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(fileInts)}")
-  //   ..setAttribute("download", "${DateTime.now().millisecondsSinceEpoch}.pdf")
-  //   ..click();
+  await download(pdf);
 }
 
 class PdfHeader extends pw.Row {
-  PdfHeader({
+  final pw.ImageProvider netImage;
+  PdfHeader(
+    this.netImage, {
     super.crossAxisAlignment = pw.CrossAxisAlignment.start,
   }) : super(children: [
           ReadTemplate.instance!.getValue(LayoutKeys.companyLogo).isNotEmpty
-              ? pw.Image(
-                  pw.MemoryImage(File(ReadTemplate.instance!
-                          .getValue(LayoutKeys.companyLogo))
-                      .readAsBytesSync()),
-                  width: 65,
-                  height: 65,
-                  fit: pw.BoxFit.fill)
+              ? pw.Image(netImage, width: 65, height: 65, fit: pw.BoxFit.fill)
               : pw.SizedBox.shrink(),
           pw.SizedBox(width: 10),
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [

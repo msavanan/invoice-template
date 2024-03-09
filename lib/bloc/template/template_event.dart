@@ -68,3 +68,25 @@ class ExitItem extends TemplateEvent {
   @override
   List<Object?> get props => [key, rowNum];
 }
+
+class AddRow extends TemplateEvent {
+  const AddRow();
+
+  @override
+  List<Object?> get props => [];
+}
+
+
+class Loading extends TemplateEvent {
+  const Loading();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class Success extends TemplateEvent {
+  const Success();
+
+  @override
+  List<Object?> get props => [];
+}

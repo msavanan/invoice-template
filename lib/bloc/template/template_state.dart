@@ -43,3 +43,26 @@ class ExitState extends TemplateState {
   @override
   List<Object> get props => [templateType];
 }
+
+class AddRowState extends TemplateState {
+  const AddRowState(super.templateType);
+
+  @override
+  List<Object> get props => [templateType];
+}
+
+class SuccessState extends TemplateState {
+  const SuccessState(super.templateType);
+
+  @override
+  List<Object> get props => [templateType];
+}
+
+class LoadingState extends TemplateState {
+  const LoadingState(super.templateType);
+
+  @override
+  List<Object> get props => [templateType];
+}
+
+

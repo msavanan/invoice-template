@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:invoice/bloc/pdf/pdf_bloc.dart';
-import 'package:invoice/bloc/pdf/pdf_state.dart';
 import 'package:invoice/bloc/template/template_bloc.dart';
 import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
@@ -9,7 +7,7 @@ import 'package:invoice/generate_pdf.dart';
 import 'package:invoice/pdf/read_template_type.dart';
 import 'package:invoice/template_one.dart';
 import 'package:invoice/template_type.dart';
-import 'package:invoice/ui/invoice/add_row.dart';
+import 'package:invoice/ui/invoice/links.dart';
 import 'package:invoice/ui/invoice/billing.dart';
 import 'package:invoice/ui/invoice/header.dart';
 import 'package:invoice/ui/invoice/invoice_table.dart';
@@ -27,15 +25,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PdfBloc>(
-            create: (BuildContext context) => PdfBloc(PdfInitialState())),
         BlocProvider<TemplateBloc>(create: (BuildContext context) {
           final Map<String, dynamic> hovered = {};
 
           for (var key in layoutOne.keys) {
             final type = layoutOne[key]!.runtimeType;
 
-            // else if (type == List<Map<String, dynamic>>) {
             if (key == LayoutKeys.itemsColumns) {
               hovered[key] = {};
               for (String m in layoutOne[key]!.keys) {
@@ -65,8 +60,6 @@ class App extends StatelessWidget {
 
 class Invoice extends StatelessWidget {
   const Invoice({super.key});
-  static const url =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Hopetoun_falls.jpg/220px-Hopetoun_falls.jpg";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,13 +85,12 @@ class Invoice extends StatelessWidget {
               const SizedBox(height: 50),
               const Align(
                   alignment: Alignment.topLeft,
-                  child:
-                      EditText(templateKey: "invoice_title", value: "INVOICE")),
+                  child: EditText(templateKey: "invoice_title")),
               const SizedBox(height: 10),
               const InvoiceTable(),
               const Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: AddRow()),
+                  child: Links()),
               const TotalWidget(),
               const TermCondt()
             ],
