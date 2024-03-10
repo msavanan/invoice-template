@@ -65,4 +65,16 @@ class LoadingState extends TemplateState {
   List<Object> get props => [templateType];
 }
 
+class DeleteRowState extends TemplateState {
+  const DeleteRowState(super.templateType);
 
+  @override
+  List<Object> get props => [templateType];
+}
+
+class SetDateState extends TemplateState {
+  const SetDateState(super.templateType);
+
+  @override
+  List<Object> get props => [templateType];
+}

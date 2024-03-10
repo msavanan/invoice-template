@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:invoice/ui/editable_text.dart';
+import 'package:invoice/ui/date_picker.dart';
 
 class Billing extends StatelessWidget {
   const Billing({super.key});
@@ -28,13 +29,16 @@ class Billing extends StatelessWidget {
                 childTwo: EditText(templateKey: "invoice_number")),
             BillTable(
                 childOne: EditText(templateKey: "invoice_date_label"),
-                childTwo: EditText(templateKey: "invoice_date")),
+                //childTwo: EditText(templateKey: "invoice_date")),
+                childTwo: CustomDatePicker(templateKey: 'invoice_date')),
             BillTable(
                 childOne: EditText(templateKey: "issue_date_label"),
-                childTwo: EditText(templateKey: "issue_date")),
+                //childTwo: EditText(templateKey: "issue_date")),
+                childTwo: CustomDatePicker(templateKey: 'issue_date')),
             BillTable(
                 childOne: EditText(templateKey: "due_date_label"),
-                childTwo: EditText(templateKey: "due_date"))
+                //childTwo: EditText(templateKey: "due_date"))
+                childTwo: CustomDatePicker(templateKey: 'due_date')),
           ],
         )
       ],

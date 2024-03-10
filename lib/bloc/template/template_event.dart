@@ -76,7 +76,6 @@ class AddRow extends TemplateEvent {
   List<Object?> get props => [];
 }
 
-
 class Loading extends TemplateEvent {
   const Loading();
 
@@ -89,4 +88,21 @@ class Success extends TemplateEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class DeleteRow extends TemplateEvent {
+  final int rowNum;
+  const DeleteRow(this.rowNum);
+
+  @override
+  List<Object?> get props => [rowNum];
+}
+
+class SetDate extends TemplateEvent {
+  final String key;
+  final String value;
+  const SetDate({required this.key, required this.value});
+
+  @override
+  List<Object?> get props => [key];
 }

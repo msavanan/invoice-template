@@ -51,8 +51,8 @@ class TemplateType {
       }
       currentRow[LayoutKeys.itemLineTotal] =
           discountPrice * (int.tryParse(qty) ?? 1);
-      layout[LayoutKeys.amountSubtotal] = _getSubTotal();
-      layout[LayoutKeys.amountTotal] = _getTotal();
+      _getSubTotal();
+      _getTotal();
     } else {
       currentRow[key] = value;
     }
@@ -128,26 +128,30 @@ class TemplateType {
     final List<Map<String, dynamic>> items = layout[LayoutKeys.items];
     double total = 0;
     for (Map<String, dynamic> item in items) {
-      total += item[LayoutKeys.itemLineTotal];
+      if(item[LayoutKeys.itemLineTotal] != ''){
+          total += item[LayoutKeys.itemLineTotal];
+      }
+
     }
     layout[LayoutKeys.amountSubtotal] = total;
     return total.toString();
   }
 
   String _getTotal() {
-    final String amount = layout[LayoutKeys.amountSubtotal];
+    final double amount = layout[LayoutKeys.amountSubtotal];
     final String taxPercentage = getTaxValues(LayoutKeys.taxPercentage);
     double total = 0;
     double taxValue = 0;
     try {
-      double amountDouble = double.parse(amount);
+      //double amountDouble = double.parse(amount);
+      double amountDouble = amount;
       taxValue = (double.parse(taxPercentage) * amountDouble / 100);
       total = amountDouble + taxValue;
       layout[LayoutKeys.taxes].first[LayoutKeys.taxValue] = taxValue.toString();
     } catch (e) {
       print(e);
     }
-
+     layout[LayoutKeys.amountTotal] = total;
     return total.toString();
   }
 
@@ -168,6 +172,26 @@ class TemplateType {
     }
     layout[LayoutKeys.items].add(row);
     hovered[LayoutKeys.items].add(rowHovered);
+  }
+
+  deleteRow(int rowNum){
+    final items = TableKeys.items;
+    if (layout[items].length == 1 ){
+      return;
+    }
+
+    layout[items].removeAt(rowNum - 1 );
+    int index = 1;
+    for(Map<String, Object> item in layout[items]){
+      item[TableKeys.itemRowNumber] = index;
+      index++;
+    }
+
+    //hovered
+    hovered[items].removeAt(rowNum - 1);
+
+    _getSubTotal();
+      _getTotal();
   }
 }
 

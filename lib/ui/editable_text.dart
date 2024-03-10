@@ -68,6 +68,14 @@ class EditItemsText extends StatelessWidget {
         final templateBlocNotifier = context.read<TemplateBloc>();
         final txt = templateBlocNotifier.state.templateType
             .getItemValue(key: templateKey, rowNum: rowNum);
+        final addRemoveIcon = (templateKey == TableKeys.itemRowNumber) && hovered ? InkWell(
+          onTap:(){
+            context.read<TemplateBloc>().add(DeleteRow(rowNum));
+            context.read<TemplateBloc>().add(Success());
+          },
+          child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(Icons.remove_circle_outline_outlined)),) : SizedBox.shrink();
 
         return MouseRegion(
           onHover: (pointerHoverEvent) {
@@ -87,7 +95,8 @@ class EditItemsText extends StatelessWidget {
                         key: templateKey, value: value ?? '', rowNum: rowNum));
                   },
                 )
-              : Text(txt),
+              : Row(
+                children: [addRemoveIcon, SizedBox(width: hovered ? 5 : 0), Text(txt)]),
         );
       },
     );

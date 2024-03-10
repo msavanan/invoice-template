@@ -14,6 +14,8 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     on<AddRow>(_addRow);
     on<Loading>(_loading);
     on<Success>(_success);
+    on<DeleteRow>(_deleteRow);
+    on<SetDate>(_setDate);
   }
 
   _readTemplate(event, emit) {}
@@ -65,16 +67,26 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     emit(ExitState(state.templateType));
   }
 
-  _loading(event, emit){
+  _loading(event, emit) {
     emit(LoadingState(state.templateType));
   }
 
-  _success(even, emit){
+  _success(even, emit) {
     emit(SuccessState(state.templateType));
   }
 
   _addRow(event, emit) {
     state.templateType.addRow();
     emit(AddRowState(state.templateType));
+  }
+
+  _deleteRow(event, emit) {
+    state.templateType.deleteRow(event.rowNum);
+    emit(DeleteRowState(state.templateType));
+  }
+
+  _setDate(event, emit) {
+    state.templateType.update(key: event.key, value: event.value);
+    emit(SetDateState(state.templateType));
   }
 }
