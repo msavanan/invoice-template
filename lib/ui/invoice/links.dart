@@ -35,18 +35,17 @@ class AddRowBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-      onTap: () {
-        context.read<TemplateBloc>().add(const Loading());
-        context.read<TemplateBloc>().add(const AddRow());
-        context.read<TemplateBloc>().add(const Success());
-      },
-      child: const Row(children: [
-        Icon(Icons.add_circle_outline_outlined),
-        Link(txt: "Add row")
-      ]),
-    )
-    );
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () {
+            context.read<TemplateBloc>().add(const Loading());
+            context.read<TemplateBloc>().add(const AddRow());
+            context.read<TemplateBloc>().add(const Success());
+          },
+          child: const Row(children: [
+            Icon(Icons.add_circle_outline_outlined),
+            Link(txt: "Add row")
+          ]),
+        ));
   }
 }

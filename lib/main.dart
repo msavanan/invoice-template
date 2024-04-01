@@ -62,41 +62,58 @@ class Invoice extends StatelessWidget {
   const Invoice({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(50.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    ReadTemplate(
-                        context.read<TemplateBloc>().state.templateType);
-                    generatePdf();
-                  },
-                  child: const Text("Print")),
-              const Header(),
-              Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  height: 1,
-                  color: Colors.black),
-              const Billing(),
-              const SizedBox(height: 50),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: EditText(templateKey: "invoice_title")),
-              const SizedBox(height: 10),
-              const InvoiceTable(),
-              const Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: Links()),
-              const TotalWidget(),
-              const TermCondt()
-            ],
+    return Column(children: [
+      ElevatedButton(
+          onPressed: () {
+            ReadTemplate(context.read<TemplateBloc>().state.templateType);
+            generatePdf();
+          },
+          child: const Text("Print")),
+      Flexible(
+        child: Scaffold(
+            body: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(40.0),
+              margin: const EdgeInsets.only(top: 40.0),
+              width: Paper.width,
+              //height: Paper.height,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(2, 2),
+                    blurRadius: 12,
+                    color: Color.fromRGBO(0, 0, 0, 0.16),
+                  )
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Header(),
+                  Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      height: 1,
+                      color: Colors.black),
+                  const Billing(),
+                  const SizedBox(height: 50),
+                  const Align(
+                      alignment: Alignment.topLeft,
+                      child: EditText(templateKey: "invoice_title")),
+                  const SizedBox(height: 10),
+                  const InvoiceTable(),
+                  const Padding(
+                      padding: EdgeInsets.only(top: 20, bottom: 20),
+                      child: Links()),
+                  const TotalWidget(),
+                  const TermCondt()
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        )),
+      )
+    ]);
   }
 }

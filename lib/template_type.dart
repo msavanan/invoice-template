@@ -128,10 +128,9 @@ class TemplateType {
     final List<Map<String, dynamic>> items = layout[LayoutKeys.items];
     double total = 0;
     for (Map<String, dynamic> item in items) {
-      if(item[LayoutKeys.itemLineTotal] != ''){
-          total += item[LayoutKeys.itemLineTotal];
+      if (item[LayoutKeys.itemLineTotal] != '') {
+        total += item[LayoutKeys.itemLineTotal];
       }
-
     }
     layout[LayoutKeys.amountSubtotal] = total;
     return total.toString();
@@ -151,7 +150,7 @@ class TemplateType {
     } catch (e) {
       print(e);
     }
-     layout[LayoutKeys.amountTotal] = total;
+    layout[LayoutKeys.amountTotal] = total;
     return total.toString();
   }
 
@@ -174,15 +173,15 @@ class TemplateType {
     hovered[LayoutKeys.items].add(rowHovered);
   }
 
-  deleteRow(int rowNum){
+  deleteRow(int rowNum) {
     final items = TableKeys.items;
-    if (layout[items].length == 1 ){
+    if (layout[items].length == 1) {
       return;
     }
 
-    layout[items].removeAt(rowNum - 1 );
+    layout[items].removeAt(rowNum - 1);
     int index = 1;
-    for(Map<String, Object> item in layout[items]){
+    for (Map<String, Object> item in layout[items]) {
       item[TableKeys.itemRowNumber] = index;
       index++;
     }
@@ -191,7 +190,7 @@ class TemplateType {
     hovered[items].removeAt(rowNum - 1);
 
     _getSubTotal();
-      _getTotal();
+    _getTotal();
   }
 }
 

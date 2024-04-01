@@ -135,3 +135,8 @@ class TableKeys {
     itemLineTotal
   ];
 }
+
+class Paper {
+  static const double width = 720;
+  static const double height = 1028;
+}

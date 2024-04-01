@@ -1,12 +1,8 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:invoice/bloc/template/template_bloc.dart';
 import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/bloc/template/template_state.dart';
-
-import '../pdf/read_template_type.dart';
 
 class CustomDatePicker extends StatelessWidget {
   const CustomDatePicker({super.key, required this.templateKey});
@@ -14,16 +10,14 @@ class CustomDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TemplateBloc, TemplateState>(
-      builder: (context, state) {
-        return InkWell(
-      child: Text(state.templateType.getValue(templateKey)),
-      onTap: () {
-        _selectDate(context);
-      },
-    );
-      });
-
+    return BlocBuilder<TemplateBloc, TemplateState>(builder: (context, state) {
+      return InkWell(
+        child: Text(state.templateType.getValue(templateKey)),
+        onTap: () {
+          _selectDate(context);
+        },
+      );
+    });
   }
 
   dateFormatter(DateTime date) {
@@ -40,7 +34,7 @@ class CustomDatePicker extends StatelessWidget {
 
     if (picked != null) {
       templateBloc.add(SetDate(key: templateKey, value: dateFormatter(picked)));
-      templateBloc.add(Success());
+      templateBloc.add(const Success());
     }
   }
 }

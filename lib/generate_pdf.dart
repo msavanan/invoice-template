@@ -11,8 +11,11 @@ import 'package:pdf/widgets.dart' as pw;
 generatePdf() async {
   final pdf = pw.Document();
 
-  final netImage =
-      await getImage(ReadTemplate.instance!.getValue(LayoutKeys.companyLogo));
+  final companyLogo = ReadTemplate.instance!.getValue(LayoutKeys.companyLogo);
+
+  final netImage = companyLogo != null && companyLogo.isNotEmpty
+      ? await getImage(companyLogo)
+      : null;
 
   pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
@@ -42,12 +45,12 @@ generatePdf() async {
 }
 
 class PdfHeader extends pw.Row {
-  final pw.ImageProvider netImage;
+  final pw.ImageProvider? netImage;
   PdfHeader(
     this.netImage, {
     super.crossAxisAlignment = pw.CrossAxisAlignment.start,
   }) : super(children: [
-          ReadTemplate.instance!.getValue(LayoutKeys.companyLogo).isNotEmpty
+          netImage != null
               ? pw.Image(netImage, width: 65, height: 65, fit: pw.BoxFit.fill)
               : pw.SizedBox.shrink(),
           pw.SizedBox(width: 10),

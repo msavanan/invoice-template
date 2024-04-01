@@ -5,6 +5,8 @@ import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
 
+import 'package:flutter/services.dart';
+
 class EditText extends StatelessWidget {
   const EditText(
       {super.key,
@@ -40,7 +42,11 @@ class EditText extends StatelessWidget {
                         key: templateKey, value: value ?? '', type: type));
                   },
                 )
-              : Text(txt),
+              : IntrinsicWidth(
+                  child: Text(
+                  txt,
+                  softWrap: true,
+                )),
         );
       },
     );
@@ -53,11 +59,13 @@ class EditItemsText extends StatelessWidget {
       required this.templateKey,
       required this.value,
       required this.rowNum,
+      this.textAlign = TextAlign.center,
       this.isEditable = true});
   final String templateKey;
   final String value;
   final int rowNum;
   final bool isEditable;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -68,14 +76,18 @@ class EditItemsText extends StatelessWidget {
         final templateBlocNotifier = context.read<TemplateBloc>();
         final txt = templateBlocNotifier.state.templateType
             .getItemValue(key: templateKey, rowNum: rowNum);
-        final addRemoveIcon = (templateKey == TableKeys.itemRowNumber) && hovered ? InkWell(
-          onTap:(){
-            context.read<TemplateBloc>().add(DeleteRow(rowNum));
-            context.read<TemplateBloc>().add(Success());
-          },
-          child: Align(
-                alignment: Alignment.centerLeft,
-                child: Icon(Icons.remove_circle_outline_outlined)),) : SizedBox.shrink();
+
+        final addRemoveIcon = hovered
+            ? InkWell(
+                onTap: () {
+                  context.read<TemplateBloc>().add(DeleteRow(rowNum!));
+                  context.read<TemplateBloc>().add(const Success());
+                },
+                child: const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(Icons.remove_circle_outline_outlined)),
+              )
+            : const SizedBox.shrink();
 
         return MouseRegion(
           onHover: (pointerHoverEvent) {
@@ -88,6 +100,7 @@ class EditItemsText extends StatelessWidget {
           },
           child: hovered && isEditable == true
               ? EditableTextFormField(
+                  readOnly: !(hovered && isEditable),
                   txt: txt,
                   width: 250,
                   onChanged: (String? value) {
@@ -95,8 +108,21 @@ class EditItemsText extends StatelessWidget {
                         key: templateKey, value: value ?? '', rowNum: rowNum));
                   },
                 )
-              : Row(
-                children: [addRemoveIcon, SizedBox(width: hovered ? 5 : 0), Text(txt)]),
+              : IntrinsicWidth(
+                  child: Row(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        addRemoveIcon,
+                        Container(color: Colors.red, width: hovered ? 5 : 0),
+                        Flexible(
+                            child: Text(
+                          txt,
+                          textAlign: textAlign,
+                          softWrap: true,
+                        ))
+                        //textAlign: TextAlign.start
+                      ]),
+                ),
         );
       },
     );
@@ -109,27 +135,36 @@ class EditableTextFormField extends StatelessWidget {
     required this.txt,
     this.width = 150,
     this.onChanged,
+    this.textAlign = TextAlign.start,
+    this.readOnly = false,
   });
   final Function(String)? onChanged;
   final String txt;
   final double width;
+  final TextAlign textAlign;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: width,
+    return IntrinsicWidth(
         child: TextFormField(
-          initialValue: txt,
-          textAlign: TextAlign.start,
-          scrollPadding: const EdgeInsets.all(0),
-          decoration: const InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(0.0))),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(0.0))),
-              contentPadding: EdgeInsets.all(5),
-              isDense: true),
-          onChanged: onChanged,
-        ));
+      readOnly: readOnly,
+      initialValue: txt,
+      textAlign: textAlign,
+      scrollPadding: const EdgeInsets.all(0),
+      // inputFormatters: [
+      //   LengthLimitingTextInputFormatter(40),
+      // ],
+      maxLines: null, enableInteractiveSelection: true,
+      keyboardType: TextInputType.multiline,
+      decoration: const InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(0.0))),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(0.0))),
+          contentPadding: EdgeInsets.all(2),
+          isDense: true),
+      onChanged: onChanged,
+    ));
   }
 }
