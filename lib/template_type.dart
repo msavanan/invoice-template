@@ -148,7 +148,7 @@ class TemplateType {
       total = amountDouble + taxValue;
       layout[LayoutKeys.taxes].first[LayoutKeys.taxValue] = taxValue.toString();
     } catch (e) {
-      print(e);
+      //print(e);
     }
     layout[LayoutKeys.amountTotal] = total;
     return total.toString();
@@ -174,7 +174,7 @@ class TemplateType {
   }
 
   deleteRow(int rowNum) {
-    final items = TableKeys.items;
+    const items = TableKeys.items;
     if (layout[items].length == 1) {
       return;
     }

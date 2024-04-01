@@ -5,8 +5,6 @@ import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
 
-import 'package:flutter/services.dart';
-
 class EditText extends StatelessWidget {
   const EditText(
       {super.key,
@@ -80,7 +78,7 @@ class EditItemsText extends StatelessWidget {
         final addRemoveIcon = hovered
             ? InkWell(
                 onTap: () {
-                  context.read<TemplateBloc>().add(DeleteRow(rowNum!));
+                  context.read<TemplateBloc>().add(DeleteRow(rowNum));
                   context.read<TemplateBloc>().add(const Success());
                 },
                 child: const Align(

@@ -13,9 +13,7 @@ generatePdf() async {
 
   final companyLogo = ReadTemplate.instance!.getValue(LayoutKeys.companyLogo);
 
-  final netImage = companyLogo != null && companyLogo.isNotEmpty
-      ? await getImage(companyLogo)
-      : null;
+  final netImage = companyLogo.isNotEmpty ? await getImage(companyLogo) : null;
 
   pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
@@ -48,21 +46,26 @@ class PdfHeader extends pw.Row {
   final pw.ImageProvider? netImage;
   PdfHeader(
     this.netImage, {
+    // super.mainAxisAlignment = pw.MainAxisAlignment.spaceBetween,
     super.crossAxisAlignment = pw.CrossAxisAlignment.start,
   }) : super(children: [
-          netImage != null
-              ? pw.Image(netImage, width: 65, height: 65, fit: pw.BoxFit.fill)
-              : pw.SizedBox.shrink(),
-          pw.SizedBox(width: 10),
+          if (netImage != null)
+            pw.Image(netImage, width: 65, height: 65, fit: pw.BoxFit.fill),
+          //: pw.SizedBox.shrink(),
+          pw.SizedBox(width: (netImage != null ? 3 : 0)),
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             ...HeaderKeys.leftList.map(
-              (e) => PdfText(e),
+              (e) => pw.SizedBox(
+                  width: Paper.width * (netImage != null ? 0.28 : 0.33),
+                  child: PdfText(e)),
             ),
           ]),
-          pw.Spacer(),
+          pw.SizedBox(width: 8),
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
             ...HeaderKeys.rightList.map(
-              (e) => PdfText(e),
+              (e) => pw.SizedBox(
+                  width: Paper.width * (netImage != null ? 0.28 : 0.33),
+                  child: PdfText(e, textAlign: pw.TextAlign.end)),
             ),
           ]),
         ]);
@@ -72,19 +75,64 @@ class PdfBilling extends pw.Row {
   PdfBilling({
     super.crossAxisAlignment = pw.CrossAxisAlignment.start,
   }) : super(children: [
-          pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [...BillingKeys.leftList.map((e) => PdfText(e))]),
-          pw.Spacer(),
-          pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-            pw.Column(
+          pw.SizedBox(
+            //  color: PdfColor(1,0,0),
+            width: Paper.width * 0.33,
+            child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [...BillingKeys.leftList.map((e) => PdfText(e))]),
+          ),
+
+          //pw.Spacer(),
+          // pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
+          //   pw.Column(
+          //       crossAxisAlignment: pw.CrossAxisAlignment.end,
+          //       children: [...BillingKeys.rightListOne.map((e) => pw.SizedBox(
+          //         width: Paper.width * 0.2,
+          //         child: PdfText(e))
+          //
+          //       )]),
+          //   pw.SizedBox(width: 8),
+          //   pw.Column(
+          //       crossAxisAlignment: pw.CrossAxisAlignment.end,
+          //       children: [...BillingKeys.rightListTwo.map((e) => pw.SizedBox(
+          //         width: Paper.width * 0.2,
+          //         child: PdfText(e) ) )]),
+          // ]),
+
+          pw.SizedBox(
+            // color: PdfColor(0,0,1),
+            width: Paper.width * 0.34,
+            child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.end,
-                children: [...BillingKeys.rightListOne.map((e) => PdfText(e))]),
-            pw.SizedBox(width: 8),
-            pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.end,
-                children: [...BillingKeys.rightListTwo.map((e) => PdfText(e))]),
-          ]),
+                children: [
+                  ...[0, 1, 2, 3].map(
+                    (e) => pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.end,
+                        crossAxisAlignment: pw.CrossAxisAlignment.end,
+                        children: [
+                          pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.end,
+                              children: [
+                                pw.SizedBox(
+                                    width: Paper.width * 0.2,
+                                    child: PdfText(BillingKeys.rightListOne[e],
+                                        textAlign: pw.TextAlign.end))
+                              ]),
+                          //pw.SizedBox(width: 8),
+                          pw.SizedBox(
+                            //  color: PdfColor(0,1,0),
+                            width: Paper.width * 0.1,
+                            child: pw.Column(
+                                crossAxisAlignment: pw.CrossAxisAlignment.end,
+                                children: [
+                                  PdfText(BillingKeys.rightListTwo[e])
+                                ]),
+                          )
+                        ]),
+                  )
+                ]),
+          )
         ]);
 }
 
@@ -162,10 +210,10 @@ class PdfText extends pw.Text {
     super.style,
     super.textAlign,
     super.textDirection,
-    super.softWrap,
+    super.softWrap = true,
     super.tightBounds,
     super.textScaleFactor,
-    super.maxLines,
+    //super.maxLines = null,
     TextOverflow? overflow,
   }) : super(ReadTemplate.instance!.getValue(key).toString());
 }

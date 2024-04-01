@@ -24,6 +24,7 @@ class Header extends StatelessWidget {
         .templateType
         .getValue(LayoutKeys.companyLogo);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MouseRegion(
           onHover: (PointerHoverEvent pointerHoverEvent) {
@@ -58,7 +59,7 @@ class Header extends StatelessWidget {
                             key: LayoutKeys.companyLogo,
                             value: image?.path ?? ''));
                       } catch (e) {
-                        print(e);
+                        // print(e);
                       }
                     },
                     child: Container(
@@ -109,26 +110,32 @@ class Header extends StatelessWidget {
           ]),
         ),
         const SizedBox(width: 10),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            EditText(templateKey: "company_name"),
-            EditText(templateKey: "company_info1"),
-            EditText(templateKey: "company_info2"),
-            EditText(templateKey: "company_info3"),
-            EditText(templateKey: "company_info4")
-          ],
+        const SizedBox(
+          width: Paper.width * 0.36,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              EditText(templateKey: "company_name"),
+              EditText(templateKey: "company_info1"),
+              EditText(templateKey: "company_info2"),
+              EditText(templateKey: "company_info3"),
+              EditText(templateKey: "company_info4")
+            ],
+          ),
         ),
         const Spacer(),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            EditText(templateKey: "company_info5"),
-            EditText(templateKey: "company_info6"),
-            EditText(templateKey: "company_info7"),
-            EditText(templateKey: "company_info8"),
-            EditText(templateKey: "company_info9")
-          ],
+        const SizedBox(
+          width: Paper.width * 0.36,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              EditText(templateKey: "company_info5"),
+              EditText(templateKey: "company_info6"),
+              EditText(templateKey: "company_info7"),
+              EditText(templateKey: "company_info8"),
+              EditText(templateKey: "company_info9")
+            ],
+          ),
         ),
       ],
     );
