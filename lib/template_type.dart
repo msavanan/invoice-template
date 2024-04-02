@@ -59,7 +59,11 @@ class TemplateType {
   }
 
   String getValue(String key, {String type = Types.defaults}) {
-    if (type == Types.defaults && layout.containsKey(key)) {
+    if (key == TotalKeys.amountTotal) {
+      return _getTotal();
+    } else if (key == TotalKeys.amountSubtotal) {
+      return _getSubTotal();
+    } else if (type == Types.defaults && layout.containsKey(key)) {
       return layout[key].toString();
     } else if (type == Types.itemColumns) {
       return getItemTitleValue(key);
@@ -72,7 +76,6 @@ class TemplateType {
 
   String getItemValue({required String key, required int rowNum}) {
     final Map<String, dynamic> item = layout[LayoutKeys.items][rowNum - 1];
-
     if (item.containsKey(key)) {
       return item[key].toString();
     }
@@ -118,7 +121,15 @@ class TemplateType {
 
   String getTaxValues(key) {
     final Map<String, dynamic> taxes = layout[LayoutKeys.taxes].first;
+
     if (taxes.containsKey(key)) {
+      if (key == TotalKeys.taxValue) {
+        if (taxes[key].runtimeType == String) {
+          final tax = double.tryParse(taxes[key]) ?? 0;
+          return tax.toStringAsFixed(2);
+        }
+        return taxes[key].toString();
+      }
       return taxes[key].toString();
     }
     return '';
@@ -133,7 +144,7 @@ class TemplateType {
       }
     }
     layout[LayoutKeys.amountSubtotal] = total;
-    return total.toString();
+    return total.toStringAsFixed(2);
   }
 
   String _getTotal() {
@@ -151,7 +162,7 @@ class TemplateType {
       //print(e);
     }
     layout[LayoutKeys.amountTotal] = total;
-    return total.toString();
+    return total.toStringAsFixed(2);
   }
 
   addRow() {

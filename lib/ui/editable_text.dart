@@ -88,46 +88,51 @@ class EditItemsText extends StatelessWidget {
             : const SizedBox.shrink();
 
         return MouseRegion(
-          onHover: (pointerHoverEvent) {
-            templateBlocNotifier
-                .add(HoverItem(key: templateKey, rowNum: rowNum));
-          },
-          onExit: (pointerExitEvent) {
-            templateBlocNotifier
-                .add(ExitItem(key: templateKey, rowNum: rowNum));
-          },
-          child: hovered && isEditable == true
-              ? EditableTextFormField(
-                  readOnly: !(hovered && isEditable),
-                  txt: txt,
-                  width: 250,
-                  onChanged: (String? value) {
-                    templateBlocNotifier.add(UpdateItem(
-                        key: templateKey, value: value ?? '', rowNum: rowNum));
-                  },
-                )
-              : IntrinsicWidth(
-                  child: Row(
-                      //crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        addRemoveIcon,
-                        Container(color: Colors.red, width: hovered ? 5 : 0),
-                        Flexible(
+            onHover: (pointerHoverEvent) {
+              templateBlocNotifier
+                  .add(HoverItem(key: templateKey, rowNum: rowNum));
+            },
+            onExit: (pointerExitEvent) {
+              templateBlocNotifier
+                  .add(ExitItem(key: templateKey, rowNum: rowNum));
+            },
+            child: true //hovered && isEditable == true
+                ? EditableTextFormField(
+                    readOnly: !(hovered && isEditable),
+                    txt: txt,
+                    width: 250,
+                    onChanged: (String? value) {
+                      templateBlocNotifier.add(UpdateItem(
+                          key: templateKey,
+                          value: value ?? '',
+                          rowNum: rowNum));
+                      context.read<TemplateBloc>().add(const Success());
+                    },
+                  )
+                : WrapSizing(
+                    isTxtEmpty: txt.isEmpty,
+                    child: Row(
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          addRemoveIcon,
+                          Container(color: Colors.red, width: hovered ? 5 : 0),
+                          Sizing(
+                            isTxtEmpty: txt.isEmpty,
                             child: Text(
-                          txt,
-                          textAlign: textAlign,
-                          softWrap: true,
-                        ))
-                        //textAlign: TextAlign.start
-                      ]),
-                ),
-        );
+                              txt,
+                              textAlign: textAlign,
+                              softWrap: true,
+                            ),
+                          )
+                          //textAlign: TextAlign.start
+                        ]),
+                  ));
       },
     );
   }
 }
 
-class EditableTextFormField extends StatelessWidget {
+class EditableTextFormField extends StatefulWidget {
   const EditableTextFormField({
     super.key,
     required this.txt,
@@ -136,33 +141,82 @@ class EditableTextFormField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.readOnly = false,
   });
-  final Function(String)? onChanged;
+  final void Function(String)? onChanged;
   final String txt;
   final double width;
   final TextAlign textAlign;
   final bool readOnly;
 
   @override
+  State<EditableTextFormField> createState() => _EditableTextFormFieldState();
+}
+
+class _EditableTextFormFieldState extends State<EditableTextFormField> {
+  var focusNode = FocusNode();
+  @override
+  void initState() {
+    focusNode.addListener(() {
+      print(focusNode.hasFocus);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
-        child: TextFormField(
-      readOnly: readOnly,
-      initialValue: txt,
-      textAlign: textAlign,
-      scrollPadding: const EdgeInsets.all(0),
-      // inputFormatters: [
-      //   LengthLimitingTextInputFormatter(40),
-      // ],
-      maxLines: null, enableInteractiveSelection: true,
-      keyboardType: TextInputType.multiline,
-      decoration: const InputDecoration(
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(0.0))),
-          contentPadding: EdgeInsets.all(2),
-          isDense: true),
-      onChanged: onChanged,
-    ));
+    return WrapSizing(
+      isTxtEmpty: widget.txt.trim().isEmpty || focusNode.hasFocus,
+      child: TextFormField(
+        focusNode: focusNode,
+        readOnly: widget.readOnly,
+        initialValue: widget.txt,
+        textAlign: widget.textAlign,
+        scrollPadding: const EdgeInsets.all(0),
+        // inputFormatters: [
+        //   LengthLimitingTextInputFormatter(40),
+        // ],
+        maxLines: null, enableInteractiveSelection: true,
+        keyboardType: TextInputType.multiline,
+        decoration: InputDecoration(
+            focusedBorder: OutlineInputBorder(
+                //|| (widget.txt.trim().isNotEmpty && !focusNode.hasFocus)
+                borderSide: widget.readOnly && widget.txt.trim().isNotEmpty
+                    ? BorderSide(color: Colors.white)
+                    : const BorderSide(),
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+            enabledBorder: OutlineInputBorder(
+                //|| (widget.txt.trim().isNotEmpty && !focusNode.hasFocus)
+                borderSide: widget.readOnly && widget.txt.trim().isNotEmpty
+                    ? BorderSide(color: Colors.white)
+                    : const BorderSide(),
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
+            contentPadding: EdgeInsets.all(2),
+            isDense: true),
+        onChanged: widget.onChanged,
+      ),
+    );
+  }
+}
+
+class Sizing extends StatelessWidget {
+  const Sizing({super.key, required this.isTxtEmpty, required this.child});
+
+  final bool isTxtEmpty;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return isTxtEmpty ? Expanded(child: child) : Flexible(child: child);
+  }
+}
+
+class WrapSizing extends StatelessWidget {
+  const WrapSizing({super.key, required this.isTxtEmpty, required this.child});
+
+  final bool isTxtEmpty;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return isTxtEmpty ? child : IntrinsicWidth(child: child);
   }
 }
