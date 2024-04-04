@@ -35,14 +35,18 @@ class TemplateType {
         currentRow[key] = int.tryParse(value) ?? 0;
         qty = value;
       } else if (key == LayoutKeys.itemPrice) {
+        if (currentRow[LayoutKeys.itemQty].toString().isEmpty) {
+          layout[LayoutKeys.items][rowNum - 1][LayoutKeys.itemQty] = 1;
+        }
         currentRow[key] = double.tryParse(value) ?? 0;
         price = value;
       } else if (key == LayoutKeys.itemDiscount) {
         currentRow[key] = double.tryParse(value) ?? 0;
         discount = value;
       }
+
       double priceDouble = (double.tryParse(price) ?? 0);
-      double discountPrice = (double.tryParse(discount) ?? 0.0);
+      double discountPrice = (double.tryParse(discount) ?? 0);
 
       if (discountPrice > 0.0) {
         discountPrice = priceDouble - ((discountPrice / 100) * priceDouble);
@@ -51,6 +55,8 @@ class TemplateType {
       }
       currentRow[LayoutKeys.itemLineTotal] =
           discountPrice * (int.tryParse(qty) ?? 1);
+      layout[LayoutKeys.items][rowNum - 1][LayoutKeys.itemLineTotal] =
+          currentRow[LayoutKeys.itemLineTotal];
       _getSubTotal();
       _getTotal();
     } else {

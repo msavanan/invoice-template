@@ -31,21 +31,29 @@ class InvoiceTable extends StatelessWidget {
           Container(height: 1, color: Colors.black),
           ...items.map((e) => CreateRow(
               rowNum: e[TableKeys.itemRowNumber],
-              children: e.keys
-                  .map((key) => Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: EditItemsText(
-                          templateKey: key,
-                          value: e[key].toString(),
-                          rowNum: e[e.keys.first] as int,
-                          isEditable: (key == TableKeys.itemRowNumber)
-                              ? false
-                              : (key == TableKeys.itemLineTotal)
-                                  ? false
-                                  : true,
-                        ),
-                      ))
-                  .toList()))
+              children: e.keys.map((key) {
+                TextAlign textAlign = TextAlign.center;
+                if (key == TableKeys.itemDescription) {
+                  textAlign = TextAlign.start;
+                } else if (key == TableKeys.itemLineTotal) {
+                  textAlign = TextAlign.end;
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: EditItemsText(
+                    textAlign: textAlign,
+                    templateKey: key,
+                    value: e[key].toString(),
+                    rowNum: e[e.keys.first] as int,
+                    isEditable: (key == TableKeys.itemRowNumber)
+                        ? false
+                        : (key == TableKeys.itemLineTotal)
+                            ? false
+                            : true,
+                  ),
+                );
+              }).toList()))
         ],
       );
     });

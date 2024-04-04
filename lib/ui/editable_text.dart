@@ -33,6 +33,7 @@ class EditText extends StatelessWidget {
           },
           child: hovered && isEditable
               ? EditableTextFormField(
+                  isHovered: hovered,
                   txt: txt,
                   width: 250,
                   onChanged: (String? value) {
@@ -88,45 +89,66 @@ class EditItemsText extends StatelessWidget {
             : const SizedBox.shrink();
 
         return MouseRegion(
-            onHover: (pointerHoverEvent) {
-              templateBlocNotifier
-                  .add(HoverItem(key: templateKey, rowNum: rowNum));
-            },
-            onExit: (pointerExitEvent) {
-              templateBlocNotifier
-                  .add(ExitItem(key: templateKey, rowNum: rowNum));
-            },
-            child: true //hovered && isEditable == true
-                ? EditableTextFormField(
-                    readOnly: !(hovered && isEditable),
-                    txt: txt,
-                    width: 250,
-                    onChanged: (String? value) {
-                      templateBlocNotifier.add(UpdateItem(
-                          key: templateKey,
-                          value: value ?? '',
-                          rowNum: rowNum));
-                      context.read<TemplateBloc>().add(const Success());
-                    },
-                  )
-                : WrapSizing(
-                    isTxtEmpty: txt.isEmpty,
-                    child: Row(
-                        //crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+          onHover: (pointerHoverEvent) {
+            templateBlocNotifier
+                .add(HoverItem(key: templateKey, rowNum: rowNum));
+          },
+          onExit: (pointerExitEvent) {
+            templateBlocNotifier
+                .add(ExitItem(key: templateKey, rowNum: rowNum));
+          },
+          //child: true //hovered && isEditable == true ?
+          child: (templateKey == LayoutKeys.itemLineTotal ||
+                  templateKey == TableKeys.itemRowNumber)
+              ? templateKey == TableKeys.itemRowNumber
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                           addRemoveIcon,
                           Container(color: Colors.red, width: hovered ? 5 : 0),
-                          Sizing(
-                            isTxtEmpty: txt.isEmpty,
-                            child: Text(
-                              txt,
-                              textAlign: textAlign,
-                              softWrap: true,
-                            ),
-                          )
-                          //textAlign: TextAlign.start
-                        ]),
-                  ));
+                          Text(
+                            txt,
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                          ),
+                        ])
+                  : Text(
+                      txt,
+                      textAlign: TextAlign.right,
+                      softWrap: true,
+                    )
+              : EditableTextFormField(
+                  isHovered: hovered,
+                  readOnly: !(hovered && isEditable),
+                  txt: txt,
+                  width: 250,
+                  textAlign: textAlign,
+                  onChanged: (String? value) {
+                    templateBlocNotifier.add(UpdateItem(
+                        key: templateKey, value: value ?? '', rowNum: rowNum));
+                    context.read<TemplateBloc>().add(const Success());
+                  },
+                ),
+          // : WrapSizing(
+          //     isTxtEmpty: txt.isEmpty,
+          //     child: Row(
+          //         //crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           addRemoveIcon,
+          //           Container(color: Colors.red, width: hovered ? 5 : 0),
+          //           Sizing(
+          //             isTxtEmpty: txt.isEmpty,
+          //             child: Text(
+          //               txt,
+          //               textAlign: textAlign,
+          //               softWrap: true,
+          //             ),
+          //           )
+          //           //textAlign: TextAlign.start
+          //         ]),
+          //   )
+        );
       },
     );
   }
@@ -140,12 +162,14 @@ class EditableTextFormField extends StatefulWidget {
     this.onChanged,
     this.textAlign = TextAlign.start,
     this.readOnly = false,
+    this.isHovered = false,
   });
   final void Function(String)? onChanged;
   final String txt;
   final double width;
   final TextAlign textAlign;
   final bool readOnly;
+  final bool isHovered;
 
   @override
   State<EditableTextFormField> createState() => _EditableTextFormFieldState();
@@ -155,18 +179,17 @@ class _EditableTextFormFieldState extends State<EditableTextFormField> {
   var focusNode = FocusNode();
   @override
   void initState() {
-    focusNode.addListener(() {
-      print(focusNode.hasFocus);
-    });
+    focusNode.addListener(() {});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return WrapSizing(
-      isTxtEmpty: widget.txt.trim().isEmpty || focusNode.hasFocus,
+      isTxtEmpty: widget.isHovered || widget.txt.trim().isEmpty,
       child: TextFormField(
-        focusNode: focusNode,
+        autofocus: widget.isHovered,
+        //focusNode: widget.isHovered,//focusNode,
         readOnly: widget.readOnly,
         initialValue: widget.txt,
         textAlign: widget.textAlign,

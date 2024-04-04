@@ -63,12 +63,28 @@ class Invoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      ElevatedButton(
-          onPressed: () {
-            ReadTemplate(context.read<TemplateBloc>().state.templateType);
-            generatePdf();
-          },
-          child: const Text("Print")),
+      Container(
+          width: Paper.width,
+          height: 60,
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+              onPressed: () {
+                ReadTemplate(context.read<TemplateBloc>().state.templateType);
+                generatePdf();
+              },
+              child: Row(children: [
+                Icon(Icons.print_rounded),
+                SizedBox(width: 8),
+                const Text("Print"),
+              ]),
+            ),
+          ])),
       Flexible(
         child: Scaffold(
             body: SingleChildScrollView(
