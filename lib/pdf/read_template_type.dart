@@ -13,6 +13,8 @@ class ReadTemplate {
     return instance!;
   }
 
+  String get currency => templateType.currency ?? '';
+
   String getValue(String key) {
     return templateType.getValue(key).toString();
   }

@@ -78,3 +78,10 @@ class SetDateState extends TemplateState {
   @override
   List<Object> get props => [templateType];
 }
+
+class UpdateCurrencyState extends TemplateState {
+  const UpdateCurrencyState(super.templateType);
+
+  @override
+  List<Object> get props => [templateType];
+}

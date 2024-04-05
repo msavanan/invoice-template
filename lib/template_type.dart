@@ -5,8 +5,13 @@ class TemplateType {
   final Map<String, dynamic> layout;
   final Map<String, dynamic> hovered;
   XFile? image;
+  String? currency;
 
-  TemplateType({required this.layout, required this.hovered, this.image});
+  TemplateType(
+      {required this.layout,
+      required this.hovered,
+      required this.currency,
+      this.image});
 
   update(
       {required String key,
@@ -212,5 +217,6 @@ class TemplateType {
 }
 
 class Template extends TemplateType {
-  Template({required super.layout, required super.hovered});
+  Template(
+      {required super.layout, required super.hovered, required super.currency});
 }

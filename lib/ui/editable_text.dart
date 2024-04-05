@@ -21,8 +21,16 @@ class EditText extends StatelessWidget {
       builder: (context, state) {
         final hovered = state.templateType.hovered[templateKey] ?? false;
         final templateBlocNotifier = context.read<TemplateBloc>();
-        final txt = templateBlocNotifier.state.templateType
+        String txt = templateBlocNotifier.state.templateType
             .getValue(templateKey, type: type);
+
+        if (templateKey == LayoutKeys.amountTotal) {
+          print(
+              'templateBlocNotifier.state.templateType.currency: ${templateBlocNotifier.state.templateType.currency}');
+          txt = (templateBlocNotifier.state.templateType.currency ?? '') +
+              ' ' +
+              txt;
+        }
 
         return MouseRegion(
           onHover: (pointerHoverEvent) {

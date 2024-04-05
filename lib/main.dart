@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:invoice/bloc/template/template_bloc.dart';
 import 'package:invoice/bloc/template/template_state.dart';
+import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/constant.dart';
 import 'package:invoice/generate_pdf.dart';
 import 'package:invoice/pdf/read_template_type.dart';
@@ -14,6 +15,8 @@ import 'package:invoice/ui/invoice/invoice_table.dart';
 import 'package:invoice/terms_conditions.dart';
 import 'package:invoice/total.dart';
 import 'package:invoice/ui/editable_text.dart';
+
+import 'package:currency_picker/currency_picker.dart';
 
 void main() {
   runApp(const App());
@@ -49,8 +52,8 @@ class App extends StatelessWidget {
               hovered[key] = false;
             }
           }
-          return TemplateBloc(InitialTemplate(
-              TemplateType(layout: layoutOne, hovered: hovered)));
+          return TemplateBloc(InitialTemplate(TemplateType(
+              layout: layoutOne, hovered: hovered, currency: '€')));
         }),
       ],
       child: const MaterialApp(home: Invoice()),
@@ -67,6 +70,24 @@ class Invoice extends StatelessWidget {
           width: Paper.width,
           height: 60,
           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            IconButton(
+                onPressed: () {
+                  showCurrencyPicker(
+                    context: context,
+                    showFlag: true,
+                    showCurrencyName: true,
+                    showCurrencyCode: true,
+                    onSelect: (Currency currency) {
+                      print('Select currency: ${currency.symbol}');
+
+                      context
+                          .read<TemplateBloc>()
+                          .add(SetCurrency(currency: currency.symbol));
+                    },
+                  );
+                },
+                icon: Icon(Icons.settings)),
+            SizedBox(width: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

@@ -16,6 +16,7 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
     on<Success>(_success);
     on<DeleteRow>(_deleteRow);
     on<SetDate>(_setDate);
+    on<SetCurrency>(_updateCurrency);
   }
 
   _readTemplate(event, emit) {}
@@ -88,5 +89,10 @@ class TemplateBloc extends Bloc<TemplateEvent, TemplateState> {
   _setDate(event, emit) {
     state.templateType.update(key: event.key, value: event.value);
     emit(SetDateState(state.templateType));
+  }
+
+  _updateCurrency(event, emit) {
+    state.templateType.currency = event.currency;
+    emit(UpdateCurrencyState(state.templateType));
   }
 }

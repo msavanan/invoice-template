@@ -106,3 +106,11 @@ class SetDate extends TemplateEvent {
   @override
   List<Object?> get props => [key];
 }
+
+class SetCurrency extends TemplateEvent {
+  final String currency;
+  const SetCurrency({required this.currency});
+
+  @override
+  List<Object?> get props => [currency];
+}

@@ -42,6 +42,8 @@ dependencies:
   path_provider: ^2.1.2
   image_picker: ^1.0.7
   web: ^0.5.1
+  currency_picker: ^2.0.21
+
 
 dev_dependencies:
   flutter_test:

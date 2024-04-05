@@ -200,6 +200,7 @@ class PdfTotalRow extends pw.Row {
           pw.SizedBox(width: 20),
           pw.Text(key2 != TotalKeys.taxValue
               ? ReadTemplate.instance!.getValue(key2)
+              // ? key2 !=  TotalKeys.amountTotal ?  ReadTemplate.instance!.getValue(key2) : (ReadTemplate.instance!.currency + ' ' + ReadTemplate.instance!.getValue(key2))
               : ReadTemplate.instance!.getTaxValue(key2))
         ]);
 }
