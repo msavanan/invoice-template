@@ -5,6 +5,8 @@ import 'package:invoice/bloc/template/template_event.dart';
 import 'package:invoice/bloc/template/template_state.dart';
 import 'package:invoice/constant.dart';
 
+import 'package:flutter/services.dart';
+
 class EditText extends StatelessWidget {
   const EditText(
       {super.key,
@@ -131,6 +133,11 @@ class EditItemsText extends StatelessWidget {
                   readOnly: !(hovered && isEditable),
                   txt: txt,
                   width: 250,
+                  inputFormatters: templateKey == TableKeys.itemDescription
+                      ? []
+                      : [
+                          FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
+                        ],
                   textAlign: textAlign,
                   onChanged: (String? value) {
                     templateBlocNotifier.add(UpdateItem(
@@ -163,7 +170,7 @@ class EditItemsText extends StatelessWidget {
 }
 
 class EditableTextFormField extends StatefulWidget {
-  const EditableTextFormField({
+  EditableTextFormField({
     super.key,
     required this.txt,
     this.width = 150,
@@ -171,6 +178,7 @@ class EditableTextFormField extends StatefulWidget {
     this.textAlign = TextAlign.start,
     this.readOnly = false,
     this.isHovered = false,
+    this.inputFormatters = const <TextInputFormatter>[],
   });
   final void Function(String)? onChanged;
   final String txt;
@@ -178,6 +186,7 @@ class EditableTextFormField extends StatefulWidget {
   final TextAlign textAlign;
   final bool readOnly;
   final bool isHovered;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<EditableTextFormField> createState() => _EditableTextFormFieldState();
@@ -202,9 +211,7 @@ class _EditableTextFormFieldState extends State<EditableTextFormField> {
         initialValue: widget.txt,
         textAlign: widget.textAlign,
         scrollPadding: const EdgeInsets.all(0),
-        // inputFormatters: [
-        //   LengthLimitingTextInputFormatter(40),
-        // ],
+        inputFormatters: widget.inputFormatters,
         maxLines: null, enableInteractiveSelection: true,
         keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
