@@ -11,8 +11,9 @@ class TotalWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         TotalTable(
-            childOne: EditText(templateKey: "amount_subtotal_label"),
-            childTwo: EditText(templateKey: "amount_subtotal")),
+          childOne: EditText(templateKey: "amount_subtotal_label"),
+          childTwo: EditText(templateKey: "amount_subtotal"),
+        ),
         SizedBox(height: 25),
         TotalTable(
             childOne: EditText(templateKey: "tax_name", type: Types.taxes),
@@ -42,7 +43,7 @@ class DividerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerRight,
-      width: MediaQuery.of(context).size.width * 0.2,
+      width: MediaQuery.of(context).size.width * 0.15,
       height: 1,
       color: Colors.black,
       margin: const EdgeInsets.only(top: 20, bottom: 20),

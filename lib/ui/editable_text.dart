@@ -135,9 +135,12 @@ class EditItemsText extends StatelessWidget {
                   width: 250,
                   inputFormatters: templateKey == TableKeys.itemDescription
                       ? []
-                      : [
-                          FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
-                        ],
+                      : (templateKey != TableKeys.itemQuantity)
+                          ? [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp('[0-9.,]')),
+                            ]
+                          : [FilteringTextInputFormatter.digitsOnly],
                   textAlign: textAlign,
                   onChanged: (String? value) {
                     templateBlocNotifier.add(UpdateItem(

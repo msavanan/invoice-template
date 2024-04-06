@@ -14,6 +14,7 @@ class LayoutKeys {
   static const String itemPrice = "item_price";
   static const String itemQty = "item_quantity";
   static const String itemDiscount = "item_discount";
+  static const String itemTax = "item_tax";
   static const String amountSubtotal = "amount_subtotal";
   static const String amountTotal = "amount_total";
   static const String companyLogo = "company_logo";

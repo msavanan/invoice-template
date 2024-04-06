@@ -22,7 +22,9 @@ class TemplateType {
     } else if (type == Types.itemColumns) {
       layout[LayoutKeys.itemsColumns][key] = value;
     } else if (type == Types.taxes) {
-      layout[LayoutKeys.taxes].first[key] = value;
+      layout[LayoutKeys.taxes].first[key] =
+          double.tryParse((double.tryParse(value) ?? 0).toStringAsFixed(2)) ??
+              0;
     }
   }
 
@@ -31,7 +33,8 @@ class TemplateType {
     final currentRow = layout[LayoutKeys.items][rowNum - 1];
     if ((key == LayoutKeys.itemPrice) ||
         (key == LayoutKeys.itemQty) ||
-        (key == LayoutKeys.itemDiscount)) {
+        (key == LayoutKeys.itemDiscount) ||
+        (key == LayoutKeys.itemTax)) {
       String qty = currentRow[LayoutKeys.itemQty].toString();
       String price = currentRow[LayoutKeys.itemPrice].toString();
       String discount = currentRow[LayoutKeys.itemDiscount].toString();
@@ -43,11 +46,19 @@ class TemplateType {
         if (currentRow[LayoutKeys.itemQty].toString().isEmpty) {
           layout[LayoutKeys.items][rowNum - 1][LayoutKeys.itemQty] = 1;
         }
-        currentRow[key] = double.tryParse(value) ?? 0;
+        final priceVal = double.tryParse(value) ?? 0;
+        currentRow[key] =
+            double.tryParse(priceVal.toStringAsFixed(2) ?? '0') ?? 0;
         price = value;
       } else if (key == LayoutKeys.itemDiscount) {
         currentRow[key] = double.tryParse(value) ?? 0;
+        layout[LayoutKeys.items][rowNum - 1][LayoutKeys.itemDiscount] =
+            double.tryParse(currentRow[key].toStringAsFixed(2)) ?? 0;
         discount = value;
+      } else if (key == LayoutKeys.itemTax) {
+        layout[LayoutKeys.items][rowNum - 1][LayoutKeys.itemTax] =
+            double.tryParse((double.tryParse(value) ?? 0).toStringAsFixed(2)) ??
+                0;
       }
 
       double priceDouble = (double.tryParse(price) ?? 0);
@@ -58,8 +69,9 @@ class TemplateType {
       } else {
         discountPrice = priceDouble;
       }
+      final itemLineTotal = discountPrice * (int.tryParse(qty) ?? 1);
       currentRow[LayoutKeys.itemLineTotal] =
-          discountPrice * (int.tryParse(qty) ?? 1);
+          double.tryParse(itemLineTotal.toStringAsFixed(2)) ?? 0;
       layout[LayoutKeys.items][rowNum - 1][LayoutKeys.itemLineTotal] =
           currentRow[LayoutKeys.itemLineTotal];
       _getSubTotal();
